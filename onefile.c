@@ -1,6 +1,6 @@
 /*
  * OneFile OS
- * Creator: FelixProfi
+ * Автор: FelixProfi (Felix010985)
  */
 
 /* Указываем Clang'у что код снизу удобно ложится на 16 бит */
@@ -74,8 +74,7 @@ __asm__ (
  * ============================================================ */
 
 __attribute__((naked, noreturn, section(".kernel")))
-void protected_mode_entry(void)
-{
+void protected_mode_entry(void) {
     __asm__ volatile (
         "mov $0x10, %ax\n"
         "mov %ax, %ds\n"
@@ -102,29 +101,28 @@ static const char message[]
 __attribute__((used)) =
 "WELCOME TO ONEFILE OS!";
 
-        __attribute__((used, section(".kernel")))
-        void kernel_main(void)
-        {
-            volatile unsigned char *vga =
-            (volatile unsigned char *)0xB8000;
+__attribute__((used, section(".kernel")))
+void kernel_main(void) {
+    volatile unsigned char *vga =
+    (volatile unsigned char *)0xB8000;
 
-            /* Очищаем экран, потому что BIOS мог туда посрать */
-            for (int i = 0; i < 80 * 25; i++) {
-                vga[i * 2] = ' ';
-                vga[i * 2 + 1] = 0x07;
-            }
+    /* Очищаем экран, потому что BIOS мог туда посрать */
+    for (int i = 0; i < 80 * 25; i++) {
+        vga[i * 2] = ' ';
+        vga[i * 2 + 1] = 0x07;
+    }
 
-            /* Выводим сообщение простым циклом  */
-            for (int i = 0; message[i] != '\0'; i++) {
-                vga[i * 2] = message[i];
-                vga[i * 2 + 1] = 0x0F;
-            }
+    /* Выводим сообщение простым циклом  */
+    for (int i = 0; message[i] != '\0'; i++) {
+        vga[i * 2] = message[i];
+        vga[i * 2 + 1] = 0x0F;
+    }
 
-            /* Останавливаем процессор чтобы зависло наше сообщение*/
-            for (;;) {
-                __asm__ volatile (
-                    "cli\n"
-                    "hlt\n"
-                );
-            }
-        }
+    /* Останавливаем процессор чтобы зависло наше сообщение*/
+    for (;;) {
+        __asm__ volatile (
+            "cli\n"
+            "hlt\n"
+        );
+    }
+}
